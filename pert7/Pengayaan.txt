@@ -1,0 +1,39 @@
+Pertanyaan Refleksi
+Setelah menyelesaikan kode, jawab pertanyaan berikut:
+
+1. Apa perbedaan antara interface dengan class biasa?
+Jawab: Interface adalah kontrak/blueprint yang hanya berisi deklarasi method (method signature) tanpa implementasi, sedangkan class biasa adalah template yang berisi implementasi lengkap dari method dan atribut. Interface tidak bisa diinstansiasi langsung dan semua method-nya bersifat abstract, sementara class biasa bisa diinstansiasi dan memiliki method konkret. Interface mendukung multiple inheritance (class bisa implements banyak interface), sedangkan class hanya bisa extends satu parent class saja (single inheritance).
+
+2. Mengapa interface tidak memiliki implementasi method di dalamnya?
+Jawab: Interface tidak memiliki implementasi method karena tujuannya adalah untuk mendefinisikan kontrak atau aturan yang harus diikuti oleh class yang mengimplementasikannya. Interface hanya menentukan "apa yang harus dilakukan" (method signature) bukan "bagaimana cara melakukannya" (implementation). Ini memberikan fleksibilitas karena setiap class yang implements interface tersebut bisa memberikan implementasi yang berbeda sesuai kebutuhannya, sambil tetap mengikuti kontrak yang sama.
+
+3. Apa tujuan penggunaan keyword "implements" pada sebuah class?
+Jawab: Keyword "implements" digunakan untuk mendeklarasikan bahwa sebuah class akan mengimplementasikan semua method yang ada di interface tertentu. Dengan menggunakan implements, class tersebut berkomitmen untuk menyediakan implementasi konkret dari semua abstract method yang dideklarasikan di interface. Ini adalah cara Java untuk mendukung polymorphism dan menciptakan kontrak yang harus dipenuhi oleh class.
+
+4. Apakah sebuah class dapat mengimplementasikan lebih dari satu interface? Jelaskan dan berikan contoh sederhana.
+Jawab: Ya, sebuah class dapat mengimplementasikan lebih dari satu interface sekaligus (multiple inheritance). Ini adalah salah satu keunggulan interface dibanding class. Contoh:
+
+interface Flyable {
+    void fly();
+}
+
+interface Swimmable {
+    void swim();
+}
+
+class Duck implements Flyable, Swimmable {
+    @Override
+    public void fly() {
+        System.out.println("Bebek terbang");
+    }
+    
+    @Override
+    public void swim() {
+        System.out.println("Bebek berenang");
+    }
+}
+
+Pada contoh di atas, class Duck mengimplementasikan dua interface sekaligus (Flyable dan Swimmable) dengan memisahkannya menggunakan koma. Duck harus menyediakan implementasi untuk semua method dari kedua interface tersebut.
+
+5. Jika sebuah class mengimplementasikan interface, apa yang terjadi jika class tersebut tidak mengimplementasikan semua method dari interface tersebut?
+Jawab: Jika class tidak mengimplementasikan semua method dari interface yang di-implements, maka akan terjadi compile error. Java compiler akan menampilkan error message yang menyatakan bahwa class tersebut harus mengimplementasikan semua abstract method dari interface, atau class tersebut harus dideklarasikan sebagai abstract class. Jika dideklarasikan sebagai abstract class, maka class tersebut tidak bisa diinstansiasi dan tanggung jawab implementasi method yang belum diimplementasikan akan diwariskan ke subclass-nya.

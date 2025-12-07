@@ -1,0 +1,430 @@
+Pertanyaan Refleksi
+Setelah menyelesaikan kode, jawab pertanyaan berikut:
+
+1. Apa itu abstract class dan Kenapa kita membutuhkan Abstarct class?
+2. Apa perbedaan utama antara abstract class dan class biasa dalam pemrograman berorientasi objek? 
+3. Mengapa subclass wajib mengimplementasikan semua abstract method dari parent class?
+4. Mengapa abstract method tidak boleh memiliki isi implementasi di dalam abstract class?
+5. Bagaimana abstract class dapat mendukung konsep polimorfisme, dan mengapa objek yang direferensikan melalui tipe abstract class tetap dapat menjalankan perilaku berbeda pada masing-masing subclass?
+
+JAWABAN:
+
+1. Apa itu Abstract Class dan Kenapa Kita Membutuhkannya?
+
+DEFINISI:
+Abstract class adalah class yang tidak dapat diinstansiasi secara langsung (tidak bisa dibuat objeknya)
+dan dirancang untuk menjadi template/blueprint bagi subclass-subclass turunannya.
+
+CIRI-CIRI:
+- Dideklarasikan dengan keyword 'abstract'
+- Dapat memiliki abstract method (method tanpa implementasi)
+- Dapat memiliki concrete method (method dengan implementasi)
+- Dapat memiliki constructor
+- Dapat memiliki atribut/field
+- TIDAK dapat diinstansiasi (new KendaraanGalaksi() = ERROR!)
+
+CONTOH DARI PROGRAM:
+public abstract class KendaraanGalaksi {
+    private String namaKendaraan;
+    private int levelEnergi;
+    
+    // Constructor (boleh ada)
+    public KendaraanGalaksi(String namaKendaraan, int kapasitasPenumpang) {
+        this.namaKendaraan = namaKendaraan;
+        this.levelEnergi = 100;
+    }
+    
+    // Concrete method (punya implementasi)
+    public final void tampilStatus() {
+        System.out.println(namaKendaraan + " | Energi: " + levelEnergi + "%");
+    }
+    
+    // Abstract method (tidak punya implementasi)
+    public abstract void aktifkanMesin();
+    public abstract void jelajah(int jarak);
+}
+
+KENAPA KITA MEMBUTUHKAN ABSTRACT CLASS?
+
+a. TEMPLATE/BLUEPRINT UNTUK SUBCLASS:
+   - Mendefinisikan struktur dasar yang harus dimiliki semua subclass
+   - Memastikan semua kendaraan punya atribut nama, energi, kapasitas
+   - Memastikan semua kendaraan punya method aktifkanMesin(), jelajah(), isiEnergi()
+
+b. CODE REUSABILITY:
+   - Atribut dan method umum ditulis sekali di abstract class
+   - PesawatTempur dan KapalEksplorasi tidak perlu tulis ulang atribut namaKendaraan, levelEnergi
+   - Method tampilStatus() ditulis sekali, dipakai semua subclass
+
+c. ENFORCE IMPLEMENTATION:
+   - Memaksa subclass mengimplementasikan method penting
+   - Setiap kendaraan HARUS punya cara aktifkanMesin() sendiri
+   - Compiler akan error jika subclass tidak implement abstract method
+
+d. POLYMORPHISM:
+   - Bisa menggunakan tipe abstract class untuk referensi berbagai subclass
+   - KendaraanGalaksi kendaraan = new PesawatTempur(...);
+   - KendaraanGalaksi kendaraan2 = new KapalEksplorasi(...);
+
+e. ABSTRAKSI:
+   - Menyembunyikan detail implementasi
+   - User tidak perlu tahu detail cara pesawat atau kapal jelajah
+   - Cukup panggil kendaraan.jelajah(10)
+
+f. DESAIN YANG LEBIH BAIK:
+   - Mencegah pembuatan objek yang terlalu general
+   - Tidak masuk akal membuat objek "KendaraanGalaksi" generik
+   - Yang masuk akal: PesawatTempur, KapalEksplorasi (concrete)
+
+ANALOGI:
+Abstract class seperti blueprint rumah:
+- Blueprint tidak bisa ditempati (tidak bisa diinstansiasi)
+- Blueprint mendefinisikan struktur dasar (abstract method)
+- Dari blueprint bisa dibuat rumah minimalis, villa, apartemen (subclass)
+- Setiap jenis rumah implement blueprint dengan cara berbeda
+
+2. Perbedaan Abstract Class dan Class Biasa:
+
+PERBANDINGAN LENGKAP:
+
+ASPECT              | ABSTRACT CLASS                    | CLASS BIASA (CONCRETE CLASS)
+--------------------|-----------------------------------|----------------------------------
+DEKLARASI           | abstract class NamaClass          | class NamaClass
+INSTANSIASI         | TIDAK BISA (new AbstractClass())  | BISA (new ConcreteClass())
+ABSTRACT METHOD     | BISA punya abstract method        | TIDAK BISA punya abstract method
+CONCRETE METHOD     | BISA punya concrete method        | Hanya punya concrete method
+CONSTRUCTOR         | Bisa punya (dipanggil via super)  | Bisa punya
+ATRIBUT             | Bisa punya                        | Bisa punya
+TUJUAN UTAMA        | Template/blueprint untuk subclass | Objek yang bisa langsung dipakai
+PEMANGGILAN         | Hanya via subclass                | Langsung bisa dipanggil
+IMPLEMENTASI        | Sebagian (abstract method kosong) | Lengkap semua
+
+CONTOH ABSTRACT CLASS:
+public abstract class KendaraanGalaksi {
+    private String nama;
+    
+    public KendaraanGalaksi(String nama) {  // Constructor ✓
+        this.nama = nama;
+    }
+    
+    public void tampilStatus() {  // Concrete method ✓
+        System.out.println(nama);
+    }
+    
+    public abstract void aktifkanMesin();  // Abstract method ✓
+}
+
+// ERROR! Tidak bisa instansiasi:
+KendaraanGalaksi k = new KendaraanGalaksi("Test");  // COMPILE ERROR!
+
+CONTOH CLASS BIASA:
+public class PesawatTempur extends KendaraanGalaksi {
+    public PesawatTempur(String nama) {
+        super(nama);
+    }
+    
+    @Override
+    public void aktifkanMesin() {  // Harus implement!
+        System.out.println("Mesin pesawat diaktifkan");
+    }
+}
+
+// OK! Bisa instansiasi:
+PesawatTempur pesawat = new PesawatTempur("Astra-Fury");  // OK! ✓
+
+KAPAN PAKAI ABSTRACT CLASS:
+- Punya kesamaan atribut/method di banyak class terkait
+- Mau enforce implementasi method tertentu
+- Tidak masuk akal membuat objek dari class parent
+- Contoh: Kendaraan, Hewan, Shape, PaymentMethod
+
+KAPAN PAKAI CLASS BIASA:
+- Class sudah spesifik dan siap dipakai
+- Semua method sudah punya implementasi
+- Masuk akal membuat objek dari class ini
+- Contoh: Mobil, Kucing, Circle, CreditCard
+
+3. Kenapa Subclass Wajib Mengimplementasikan Abstract Method?
+
+ALASAN TEKNIS:
+
+a. KONTRAK/PERJANJIAN:
+   - Abstract class membuat "kontrak" dengan subclass
+   - Kontrak: "Jika kamu extends aku, kamu HARUS implement method ini"
+   - Java compiler enforce kontrak ini
+
+b. COMPILE-TIME CHECK:
+   - Java compiler memastikan semua abstract method diimplementasi
+   - Jika tidak implement = COMPILE ERROR
+   - Mencegah error di runtime
+
+CONTOH ERROR:
+public class PesawatTempur extends KendaraanGalaksi {
+    // Lupa implement aktifkanMesin()
+    // Lupa implement jelajah()
+    // Lupa implement isiEnergi()
+}
+
+COMPILER ERROR:
+"PesawatTempur is not abstract and does not override abstract method aktifkanMesin() in KendaraanGalaksi"
+
+SOLUSI 1: Implement semua abstract method
+public class PesawatTempur extends KendaraanGalaksi {
+    @Override
+    public void aktifkanMesin() {
+        System.out.println("Mesin pesawat diaktifkan");
+    }
+    
+    @Override
+    public void jelajah(int jarak) {
+        System.out.println("Menjelajah " + jarak + " km");
+    }
+    
+    @Override
+    public void isiEnergi(int jumlah) {
+        System.out.println("Mengisi energi");
+    }
+}
+
+SOLUSI 2: Jadikan subclass abstract juga (jarang dipakai)
+public abstract class PesawatTempur extends KendaraanGalaksi {
+    // Tidak perlu implement sekarang
+    // Subclass dari PesawatTempur yang harus implement
+}
+
+ALASAN LOGIS:
+
+c. POLYMORPHISM GUARANTEE:
+   - Jika tipe abstract class digunakan untuk referensi:
+     KendaraanGalaksi kendaraan = new PesawatTempur(...);
+   - Saat panggil kendaraan.aktifkanMesin(), method HARUS ada
+   - Jika tidak diimplementasi, runtime error!
+
+d. DESAIN PATTERN:
+   - Abstract class mendefinisikan "apa yang harus dilakukan"
+   - Subclass mendefinisikan "bagaimana melakukannya"
+   - Template Method Pattern
+
+e. CONSISTENCY:
+   - Semua kendaraan dijamin punya method aktifkanMesin()
+   - Bisa dengan yakin panggil method tersebut
+   - Tidak perlu cek "apakah method ini ada?"
+
+ANALOGI:
+Sperti kontrak kerja:
+- Perusahaan (abstract class) bilang: "Pegawai harus datang tepat waktu"
+- Pegawai (subclass) HARUS implement aturan tersebut
+- Jika pegawai tidak implement = tidak bisa jadi pegawai (compile error)
+
+4. Kenapa Abstract Method Tidak Boleh Punya Implementasi?
+
+ALASAN FUNDAMENTAL:
+
+a. DEFINISI ABSTRACT:
+   - "Abstract" = tidak konkret, tidak jelas detailnya
+   - Abstract method = method yang perilakunya berbeda tiap subclass
+   - Tidak ada implementasi "default" yang masuk akal
+
+b. SETIAP SUBCLASS BERBEDA:
+   Contoh dari program:
+   
+   abstract void aktifkanMesin();
+   
+   PesawatTempur:
+   - Cek energi >= 20%
+   - Print "Mesin pesawat tempur diaktifkan"
+   
+   KapalEksplorasi:
+   - Cek energi >= 15%
+   - Print "Kapal eksplorasi siap berangkat"
+   
+   Tidak ada implementasi "generic" yang cocok untuk keduanya!
+
+c. MEMAKSA SUBCLASS BERPIKIR:
+   - Subclass harus memikirkan implementasi yang tepat
+   - Tidak bisa "malas" pakai implementasi default yang tidak sesuai
+
+d. FLEKSIBILITAS:
+   - Setiap subclass bebas implement dengan cara berbeda
+   - PesawatTempur konsumsi energi 3%/km
+   - KapalEksplorasi konsumsi energi 2%/km
+   - Tidak bisa dibuat satu implementasi untuk kedua kasus
+
+BANDINGKAN DENGAN CONCRETE METHOD:
+
+public final void tampilStatus() {  // Concrete method
+    System.out.println(namaKendaraan + " | Energi: " + levelEnergi + "%");
+}
+
+Kenapa ini concrete (punya implementasi)?
+- Format tampilan SAMA untuk semua kendaraan
+- Tidak perlu customize per subclass
+- Ada implementasi default yang masuk akal
+
+JIKA ABSTRACT METHOD PUNYA IMPLEMENTASI:
+public abstract void aktifkanMesin() {  // ERROR!
+    System.out.println("Mesin diaktifkan");
+}
+
+Kontradiksi:
+- "abstract" = tidak punya implementasi
+- Tapi ada implementasi di body
+- Compiler bingung!
+
+SOLUSI JIKA MAU IMPLEMENTASI DEFAULT:
+Gunakan concrete method, bukan abstract:
+
+public void aktifkanMesin() {  // Bukan abstract
+    System.out.println("Mesin diaktifkan");  // Default implementation
+}
+
+// Subclass bisa override atau tidak
+public class PesawatTempur extends KendaraanGalaksi {
+    @Override  // Optional
+    public void aktifkanMesin() {
+        // Custom implementation
+    }
+}
+
+KESIMPULAN:
+- Abstract method = deklarasi tanpa implementasi
+- Concrete method = deklarasi dengan implementasi
+- Jika punya implementasi = bukan abstract!
+
+5. Abstract Class, Polymorphism, dan Dynamic Dispatch:
+
+BAGAIMANA ABSTRACT CLASS MENDUKUNG POLYMORPHISM?
+
+a. REFERENSI TIPE ABSTRACT CLASS:
+   
+   // Tipe abstract class, objek concrete subclass
+   KendaraanGalaksi kendaraan1 = new PesawatTempur("Astra-Fury", 2, 8);
+   KendaraanGalaksi kendaraan2 = new KapalEksplorasi("Voyager X", 10, 4);
+   
+   // Bisa simpan dalam array
+   KendaraanGalaksi[] armada = new KendaraanGalaksi[2];
+   armada[0] = new PesawatTempur("Fighter-1", 2, 10);
+   armada[1] = new KapalEksplorasi("Explorer-1", 15, 5);
+
+b. UNIFIED INTERFACE:
+   
+   for (KendaraanGalaksi kendaraan : armada) {
+       kendaraan.aktifkanMesin();  // Polimorfis!
+       kendaraan.jelajah(10);
+       kendaraan.tampilStatus();
+   }
+   
+   Satu loop untuk berbagai jenis kendaraan!
+
+c. INTERCHANGEABLE:
+   
+   public void lakukanMisi(KendaraanGalaksi kendaraan) {
+       kendaraan.aktifkanMesin();
+       kendaraan.jelajah(50);
+   }
+   
+   lakukanMisi(pesawat);  // OK
+   lakukanMisi(kapal);    // OK
+   
+   Method tidak peduli tipe konkret kendaraan!
+
+KENAPA OBJEK TETAP BISA MENJALANKAN PERILAKU BERBEDA?
+
+DYNAMIC DISPATCH (RUNTIME POLYMORPHISM):
+
+1. COMPILE TIME:
+   KendaraanGalaksi kendaraan = new PesawatTempur("Astra-Fury", 2, 8);
+   kendaraan.aktifkanMesin();
+   
+   Compiler check:
+   - Apakah KendaraanGalaksi punya method aktifkanMesin()? ✓ Ya (abstract)
+   - Signature benar? ✓ Ya
+   - Compile sukses ✓
+
+2. RUNTIME:
+   Saat program jalan:
+   a. Java cek: "Objek sebenarnya apa?" → PesawatTempur
+   b. Java cari: "Implementasi aktifkanMesin() di PesawatTempur"
+   c. Java panggil: Method dari PesawatTempur
+   d. Output: "Mesin pesawat tempur diaktifkan."
+
+3. CONTOH LENGKAP:
+   
+   KendaraanGalaksi k1 = new PesawatTempur("Fighter", 2, 8);
+   KendaraanGalaksi k2 = new KapalEksplorasi("Explorer", 10, 4);
+   
+   k1.aktifkanMesin();  // Runtime: Panggil PesawatTempur.aktifkanMesin()
+                        // Output: "Mesin pesawat tempur diaktifkan."
+   
+   k2.aktifkanMesin();  // Runtime: Panggil KapalEksplorasi.aktifkanMesin()
+                        // Output: "Kapal eksplorasi siap berangkat!"
+   
+   TIPE REFERENSI SAMA (KendaraanGalaksi)
+   TAPI PERILAKU BERBEDA!
+
+VIRTUAL METHOD TABLE (VTABLE):
+
+Setiap objek punya pointer ke VTABLE class-nya:
+
+PesawatTempur VTABLE:
+[aktifkanMesin] → address PesawatTempur.aktifkanMesin()
+[jelajah]       → address PesawatTempur.jelajah()
+[isiEnergi]     → address PesawatTempur.isiEnergi()
+[tampilStatus]  → address KendaraanGalaksi.tampilStatus() (inherited)
+
+KapalEksplorasi VTABLE:
+[aktifkanMesin] → address KapalEksplorasi.aktifkanMesin()
+[jelajah]       → address KapalEksplorasi.jelajah()
+[isiEnergi]     → address KapalEksplorasi.isiEnergi()
+[tampilStatus]  → address KendaraanGalaksi.tampilStatus() (inherited)
+
+Saat k1.aktifkanMesin() dipanggil:
+1. Java cek VTABLE dari k1 (PesawatTempur VTABLE)
+2. Lookup method aktifkanMesin
+3. Jump ke address PesawatTempur.aktifkanMesin()
+4. Execute method tersebut
+
+KEUNTUNGAN POLYMORPHISM DENGAN ABSTRACT CLASS:
+
+a. EXTENSIBILITY:
+   public class RoketKargo extends KendaraanGalaksi {
+       @Override
+       public void aktifkanMesin() { ... }
+       // ... implement abstract methods lain
+   }
+   
+   Bisa langsung digunakan di kode existing:
+   KendaraanGalaksi kendaraan = new RoketKargo(...);
+   kendaraan.aktifkanMesin();  // Otomatis kerja!
+
+b. LOOSE COUPLING:
+   Kode tidak terikat pada class konkret:
+   
+   // Bad (tight coupling):
+   PesawatTempur pesawat = new PesawatTempur(...);
+   pesawat.aktifkanMesin();
+   
+   // Good (loose coupling):
+   KendaraanGalaksi kendaraan = new PesawatTempur(...);
+   kendaraan.aktifkanMesin();
+   
+   Mudah ganti implementasi tanpa ubah kode!
+
+c. CODE GENERALITY:
+   public class MisiGalaksi {
+       public void kirimKendaraan(KendaraanGalaksi kendaraan) {
+           kendaraan.aktifkanMesin();
+           kendaraan.jelajah(100);
+       }
+   }
+   
+   Method ini kerja untuk SEMUA jenis kendaraan!
+   Tidak perlu buat kirimPesawat(), kirimKapal(), dll.
+
+KESIMPULAN:
+- Abstract class menyediakan "interface" umum
+- Subclass menyediakan implementasi spesifik
+- Polymorphism memungkinkan satu referensi untuk berbagai objek
+- Dynamic dispatch memastikan method yang tepat dipanggil runtime
+- Perilaku berbeda karena setiap objek punya VTABLE sendiri
+- Fleksibel, extensible, maintainable!

@@ -1,0 +1,286 @@
+[PERTANYAAN PENGAYAAN]
+
+1. Mengapa constructor di class Member wajib memanggil constructor Customer menggunakan super(...)?
+
+JAWABAN:
+Constructor Member wajib memanggil super(...) karena:
+
+a. INISIALISASI ATRIBUT PARENT:
+   - Member mewarisi atribut nama, idCustomer, totalBelanja dari Customer
+   - Atribut-atribut ini harus diinisialisasi terlebih dahulu
+   - Constructor Customer bertanggung jawab menginisialisasi atribut-atributnya sendiri
+
+b. ATURAN JAVA:
+   - Java mengharuskan constructor subclass memanggil constructor superclass
+   - Jika tidak ditulis eksplisit, Java otomatis memanggil super() (constructor default)
+   - Jika superclass tidak punya constructor default, harus panggil super(...) eksplisit
+   
+c. URUTAN INISIALISASI:
+   - Objek superclass harus dibuat terlebih dahulu sebelum objek subclass
+   - super(...) HARUS di baris pertama constructor subclass
+   
+Contoh:
+Member(String nama, String idCustomer, int totalBelanja, int poinReward, String level) {
+    super(nama, idCustomer, totalBelanja);  // Inisialisasi atribut Customer dulu
+    this.poinReward = poinReward;           // Baru inisialisasi atribut Member
+    this.level = level;
+}
+
+2. Apa tujuan memanggil super.tampilkanInfo() saat melakukan overriding method di subclass?
+
+JAWABAN:
+Tujuan memanggil super.tampilkanInfo():
+
+a. REUSE CODE (Penggunaan Ulang Kode):
+   - Tidak perlu menulis ulang kode untuk menampilkan nama, ID, total belanja
+   - Cukup panggil method parent, lalu tambahkan informasi khusus Member
+   
+b. KONSISTENSI:
+   - Format tampilan data Customer tetap sama di semua tempat
+   - Jika ada perubahan format di Customer, otomatis berlaku untuk Member
+   
+c. MAINTAINABILITY:
+   - Jika perlu ubah cara menampilkan info Customer, cukup ubah di satu tempat
+   - Tidak perlu ubah di semua subclass
+   
+d. EXTENSIBILITY:
+   - Member hanya fokus menambahkan informasi khususnya (poin dan level)
+   - Tidak perlu tahu detail implementasi tampilan Customer
+
+Contoh:
+@Override
+void tampilkanInfo() {
+    super.tampilkanInfo();  // Tampilkan info Customer (nama, ID, total belanja)
+    System.out.println("Poin Reward: " + poinReward + " | Level: " + level);  // Tambah info Member
+}
+
+Tanpa super:
+@Override
+void tampilkanInfo() {
+    // Harus tulis ulang semua kode dari Customer
+    System.out.println("Nama: " + nama + " | ID: " + idCustomer + " | Total Belanja: Rp " + totalBelanja);
+    System.out.println("Poin Reward: " + poinReward + " | Level: " + level);
+    // Jika format Customer berubah, harus ubah di sini juga!
+}
+
+3. Berikan contoh kondisi di mana pemanggilan super.method() sangat penting dalam pewarisan.
+
+JAWABAN:
+Contoh kondisi penting menggunakan super.method():
+
+CONTOH 1: VALIDASI BERLAPIS
+class Karyawan {
+    protected double gaji;
+    
+    void setGaji(double gaji) {
+        if (gaji < 0) {
+            System.out.println("Gaji tidak boleh negatif!");
+            return;
+        }
+        this.gaji = gaji;
+    }
+}
+
+class Manajer extends Karyawan {
+    private double bonus;
+    
+    @Override
+    void setGaji(double gaji) {
+        super.setGaji(gaji);  // Validasi parent tetap dijalankan
+        
+        // Tambah validasi khusus Manajer
+        if (gaji < 5000000) {
+            System.out.println("Gaji manajer minimal 5 juta!");
+        }
+    }
+}
+
+CONTOH 2: PERHITUNGAN KUMULATIF
+class Barang {
+    protected double harga;
+    
+    double hitungTotal(int jumlah) {
+        return harga * jumlah;
+    }
+}
+
+class BarangDiskon extends Barang {
+    private double diskon;
+    
+    @Override
+    double hitungTotal(int jumlah) {
+        double totalNormal = super.hitungTotal(jumlah);  // Hitung harga normal dulu
+        return totalNormal - (totalNormal * diskon / 100);  // Kurangi diskon
+    }
+}
+
+CONTOH 3: LOGGING/AUDIT TRAIL
+class Database {
+    void save(String data) {
+        System.out.println("Menyimpan data: " + data);
+        // Kode simpan ke database
+    }
+}
+
+class AuditedDatabase extends Database {
+    @Override
+    void save(String data) {
+        System.out.println("[AUDIT] Waktu: " + System.currentTimeMillis());
+        super.save(data);  // Panggil method asli
+        System.out.println("[AUDIT] Data tersimpan");
+    }
+}
+
+CONTOH 4: INITIALIZATION CHAIN
+class Kendaraan {
+    void init() {
+        System.out.println("Cek mesin");
+        System.out.println("Cek ban");
+    }
+}
+
+class Mobil extends Kendaraan {
+    @Override
+    void init() {
+        super.init();  // Jalankan pengecekan dasar
+        System.out.println("Cek AC");
+        System.out.println("Cek airbag");
+    }
+}
+
+4. Bagaimana keyword super membantu membedakan atribut yang memiliki nama sama antara parent dan child?
+
+JAWABAN:
+Keyword super membantu mengakses atribut/method parent saat terjadi NAME COLLISION (nama sama):
+
+CONTOH KASUS:
+class Customer {
+    protected String nama = "Customer";
+    
+    void tampilNama() {
+        System.out.println("Nama Customer: " + nama);
+    }
+}
+
+class Member extends Customer {
+    private String nama = "Member";  // Nama sama dengan parent!
+    
+    void tampilSemuaNama() {
+        System.out.println("Nama di Member: " + this.nama);     // Output: Member
+        System.out.println("Nama di Customer: " + super.nama);  // Output: Customer
+        
+        this.tampilNama();   // Panggil method sendiri (jika ada)
+        super.tampilNama();  // Panggil method parent
+    }
+}
+
+PENJELASAN:
+- this.nama    → merujuk ke atribut di class Member
+- super.nama   → merujuk ke atribut di class Customer (parent)
+- this.method()  → panggil method di class Member
+- super.method() → panggil method di class Customer
+
+BEST PRACTICE:
+Sebaiknya HINDARI nama atribut yang sama antara parent dan child untuk menghindari confusion.
+Gunakan nama yang berbeda atau gunakan private di parent lalu akses via getter.
+
+CONTOH LEBIH BAIK:
+class Customer {
+    protected String namaCustomer;
+}
+
+class Member extends Customer {
+    private String levelMember;  // Nama berbeda, tidak bentrok
+}
+
+5. Mengapa pendekatan inheritance lebih efisien dibanding menyalin ulang seluruh atribut dan method ke dalam class Member?
+
+JAWABAN:
+
+KEUNTUNGAN INHERITANCE vs COPY-PASTE:
+
+1. DRY PRINCIPLE (Don't Repeat Yourself):
+   DENGAN INHERITANCE:
+   - Atribut nama, idCustomer, totalBelanja cukup ditulis sekali di Customer
+   - Member otomatis punya semua atribut Customer
+   
+   TANPA INHERITANCE (Copy-Paste):
+   class Member {
+       String nama;         // Copy dari Customer
+       String idCustomer;   // Copy dari Customer
+       int totalBelanja;    // Copy dari Customer
+       int poinReward;
+       String level;
+   }
+   - Kode duplikat, melanggar DRY principle
+
+2. MAINTAINABILITY (Kemudahan Pemeliharaan):
+   DENGAN INHERITANCE:
+   - Jika perlu tambah atribut email di Customer:
+     class Customer {
+         protected String email;  // Tambah di sini aja
+     }
+   - Member otomatis punya atribut email
+   
+   TANPA INHERITANCE:
+   - Harus tambah di Customer DAN Member DAN VIP DAN semua class lain
+   - Rawan lupa, error prone
+
+3. CONSISTENCY (Konsistensi):
+   DENGAN INHERITANCE:
+   - Method tampilkanInfo() di Customer dijamin sama untuk semua turunannya
+   - Perubahan di satu tempat otomatis berlaku ke semua
+   
+   TANPA INHERITANCE:
+   - Harus copy-paste method ke semua class
+   - Jika ada perubahan, harus ubah di 10 tempat berbeda
+   - Rawan inconsistency
+
+4. EXTENSIBILITY (Kemudahan Pengembangan):
+   DENGAN INHERITANCE:
+   class VIPMember extends Member {
+       private String personalAssistant;
+   }
+   - Otomatis punya semua atribut Customer dan Member
+   
+   TANPA INHERITANCE:
+   - Harus copy semua atribut dari Customer DAN Member
+   - 10 atribut = 10 copy-paste
+
+5. POLYMORPHISM:
+   DENGAN INHERITANCE:
+   Customer[] daftarPelanggan = new Customer[3];
+   daftarPelanggan[0] = new Customer(...);
+   daftarPelanggan[1] = new Member(...);
+   daftarPelanggan[2] = new VIPMember(...);
+   
+   for (Customer c : daftarPelanggan) {
+       c.tampilkanInfo();  // Bisa dipanggil untuk semua tipe!
+   }
+   
+   TANPA INHERITANCE:
+   - Tidak bisa memperlakukan Member sebagai Customer
+   - Harus buat array terpisah untuk setiap tipe
+   - Kode jadi rumit
+
+6. MEMORY EFFICIENCY:
+   DENGAN INHERITANCE:
+   - Method tampilkanInfo() dari Customer disimpan sekali di memory
+   - Semua objek Member dan VIPMember menggunakan method yang sama
+   
+   TANPA INHERITANCE:
+   - Setiap class punya copy method sendiri
+   - Lebih boros memory
+
+7. LOGICAL STRUCTURE:
+   DENGAN INHERITANCE:
+   - Mencerminkan hubungan dunia nyata: Member IS-A Customer
+   - Struktur kode mudah dipahami
+   
+   TANPA INHERITANCE:
+   - Tidak ada hubungan eksplisit antar class
+   - Sulit memahami business logic
+
+KESIMPULAN:
+Inheritance = Efisien, Maintainable, Scalable, Clean Code
+Copy-Paste = Duplikasi, Error-Prone, Sulit Maintenance, Bad Practice

@@ -1,0 +1,97 @@
+Pertanyaan Refleksi
+Setelah menyelesaikan kode, jawab pertanyaan berikut:
+
+1. Apa fungsi keyword 'extends' dalam deklarasi class Java?
+2. Jelaskan perbedaan antara Method Overloading (yang ada di latihan sebelumnya) dengan Method Overriding (yang ada di latihan ini)!
+3. Apa kegunaan keyword 'super' di dalam constructor subclass (Manajer)?
+4. Jika variabel di class Karyawan diubah access modifier-nya menjadi 'private', apa yang akan terjadi pada class Manajer? Bagaimana solusinya?
+5. Mengapa kita perlu menggunakan Inheritance? Apa keuntungan utamanya dibandingkan membuat dua class yang terpisah sama sekali (misal class Karyawan dan class Manajer dibuat terpisah tanpa hubungan)?
+
+Jawaban:
+
+1. Fungsi keyword 'extends':
+   Keyword 'extends' digunakan untuk mendeklarasikan pewarisan (inheritance) dalam Java.
+   - Membuat hubungan IS-A antara subclass dan superclass
+   - Subclass mewarisi semua atribut dan method dari superclass (kecuali yang private)
+   - Contoh: class Manajer extends Karyawan
+     Artinya: Manajer IS-A Karyawan (Manajer adalah Karyawan)
+   - Manajer otomatis memiliki atribut nama dan gajiPokok dari Karyawan
+   - Java hanya mendukung single inheritance (satu class hanya bisa extends satu superclass)
+
+2. Perbedaan Method Overloading vs Method Overriding:
+   
+   METHOD OVERLOADING (Pert2):
+   - Terjadi dalam SATU class yang sama
+   - Method dengan NAMA SAMA tapi PARAMETER BERBEDA (jumlah atau tipe)
+   - Terjadi pada compile time (static polymorphism)
+   - Contoh di BarangMusik:
+     BarangMusik(String kode, String nama)
+     BarangMusik(String kode, String nama, double harga)
+     BarangMusik(String kode, String nama, double harga, int stok)
+   
+   METHOD OVERRIDING (Pert3):
+   - Terjadi antara SUPERCLASS dan SUBCLASS
+   - Method dengan NAMA dan PARAMETER yang SAMA PERSIS
+   - Subclass mengubah implementasi method dari superclass
+   - Terjadi pada runtime (dynamic polymorphism)
+   - Menggunakan annotation @Override
+   - Contoh: tampilInfo() di Karyawan dioverride oleh Manajer
+
+3. Kegunaan keyword 'super' di constructor:
+   - Memanggil constructor dari superclass (parent class)
+   - Harus dipanggil di BARIS PERTAMA constructor subclass
+   - Menginisialisasi atribut yang dimiliki superclass
+   - Contoh di Manajer:
+     Manajer(String nama, double gajiPokok, double tunjangan) {
+         super(nama, gajiPokok);  // Panggil constructor Karyawan
+         this.tunjangan = tunjangan;
+     }
+   - Tanpa super, Java otomatis memanggil constructor default superclass
+   - Jika superclass tidak punya constructor default, harus panggil super() eksplisit
+
+4. Jika variabel Karyawan diubah menjadi private:
+   
+   YANG TERJADI:
+   - Class Manajer TIDAK BISA mengakses langsung variabel nama dan gajiPokok
+   - Error: "nama has private access in Karyawan"
+   - Method tampilInfo() di Manajer akan error karena tidak bisa akses nama dan gajiPokok
+   
+   SOLUSI:
+   a. Gunakan getter method:
+      System.out.println("Nama: " + getNama() + " | Gaji Pokok: Rp " + getGajiPokok());
+   
+   b. Atau panggil method parent:
+      super.tampilInfo();
+      System.out.println("Tunjangan: Rp " + tunjangan);
+   
+   c. Atau tetap gunakan protected (seperti implementasi kita):
+      protected String nama;
+      protected double gajiPokok;
+
+5. Keuntungan Inheritance:
+   
+   REUSABILITY (Penggunaan Ulang Kode):
+   - Tidak perlu menulis ulang atribut dan method yang sama
+   - Manajer otomatis punya nama dan gajiPokok tanpa deklarasi ulang
+   
+   MAINTAINABILITY (Kemudahan Pemeliharaan):
+   - Jika ada perubahan di Karyawan, otomatis berlaku untuk semua subclass
+   - Cukup ubah di satu tempat (superclass)
+   
+   EXTENSIBILITY (Kemudahan Pengembangan):
+   - Mudah menambah tipe karyawan baru (misal: Supervisor, Direktur)
+   - Tinggal extends Karyawan dan tambahkan atribut khusus
+   
+   POLYMORPHISM:
+   - Bisa memperlakukan objek subclass sebagai objek superclass
+   - Contoh: Karyawan k = new Manajer(...);
+   
+   LOGICAL HIERARCHY (Hierarki Logis):
+   - Mencerminkan hubungan dunia nyata
+   - Manajer memang adalah Karyawan dengan atribut tambahan
+   
+   Tanpa inheritance:
+   - Harus copy-paste kode nama dan gajiPokok ke class Manajer
+   - Jika ada perubahan, harus ubah di banyak tempat (prone to error)
+   - Tidak ada hubungan logis antar class
+   - Kode lebih panjang dan sulit di-maintain

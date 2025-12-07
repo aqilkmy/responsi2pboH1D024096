@@ -1,0 +1,26 @@
+class Manajer extends Karyawan {
+    private double tunjangan;
+    
+    Manajer(String nama, double gajiPokok, double tunjangan) {
+        super(nama, gajiPokok);
+        this.tunjangan = tunjangan;
+    }
+    
+    void setTunjangan(double tunjangan) {
+        this.tunjangan = tunjangan;
+    }
+    
+    double getTunjangan() {
+        return this.tunjangan;
+    }
+    
+    double hitungTotalGaji() {
+        return gajiPokok + tunjangan;
+    }
+    
+    @Override
+    void tampilInfo() {
+        System.out.println("Nama: " + nama + " | Gaji Pokok: Rp " + gajiPokok + " | Tunjangan: Rp " + tunjangan);
+        System.out.println("Total Pendapatan: Rp " + hitungTotalGaji());
+    }
+}

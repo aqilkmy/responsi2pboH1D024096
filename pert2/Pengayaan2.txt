@@ -1,0 +1,82 @@
+Pertanyaan Refleksi
+Setelah menyelesaikan kode, jawab pertanyaan berikut:
+
+Apa yang dimaksud dengan constructor overloading dalam pemrograman berorientasi objek?
+Bagaimana cara Java membedakan constructor yang memiliki nama sama namun parameter berbeda?
+Apa perbedaan antara mengakses variabel secara langsung (misalnya: objek.variabel = nilai) dengan menggunakan method setter?
+Jelaskan konsep encapsulation dan bagaimana method dapat membantu melindungi data dalam sebuah class!
+Mengapa constructor tidak memiliki return type, bahkan tidak menggunakan kata kunci void?
+
+Jawaban
+
+1. Constructor Overloading:
+   Constructor overloading adalah kemampuan untuk membuat beberapa constructor dalam satu class dengan nama yang sama tetapi parameter yang berbeda (jumlah atau tipe). Ini memberikan fleksibilitas dalam cara membuat objek.
+   
+   Contoh di BarangMusik:
+   - BarangMusik(String kode, String nama)
+   - BarangMusik(String kode, String nama, double harga)
+   - BarangMusik(String kode, String nama, double harga, int stok)
+   
+   Manfaat: Objek dapat dibuat dengan berbagai tingkat kelengkapan informasi sesuai kebutuhan.
+
+2. Cara Java Membedakan Constructor:
+   Java menggunakan SIGNATURE untuk membedakan constructor yang overloaded. Signature terdiri dari:
+   - Nama method/constructor (harus sama untuk overloading)
+   - Jumlah parameter
+   - Tipe data parameter
+   - Urutan parameter
+   
+   Java TIDAK menggunakan return type untuk membedakan (constructor memang tidak punya return type).
+   Saat objek dibuat, compiler akan memilih constructor yang cocok berdasarkan argumen yang diberikan.
+
+3. Perbedaan Akses Langsung vs Method Setter:
+   
+   AKSES LANGSUNG (objek.variabel = nilai):
+   - Tidak ada validasi data
+   - Tidak ada kontrol akses
+   - Langgar prinsip encapsulation
+   - Rentan terhadap kesalahan
+   
+   METHOD SETTER (objek.setVariabel(nilai)):
+   - Dapat melakukan validasi (contoh: harga tidak boleh negatif)
+   - Dapat menambahkan logika tambahan
+   - Melindungi integritas data
+   - Lebih mudah dimaintain jika ada perubahan
+   
+   Contoh:
+   void ubahHarga(double hargaBaru) {
+       if (hargaBaru >= 0) {
+           this.harga = hargaBaru;
+       }
+   }
+
+4. Encapsulation:
+   Encapsulation adalah prinsip menyembunyikan detail implementasi dan hanya mengekspos interface yang diperlukan. Variabel dibuat private dan diakses melalui method public (getter/setter).
+   
+   Manfaat Method dalam Encapsulation:
+   - PROTEKSI DATA: Method dapat memvalidasi input sebelum mengubah state
+   - ABSTRAKSI: User tidak perlu tahu bagaimana data disimpan
+   - FLEKSIBILITAS: Implementasi internal dapat diubah tanpa mengubah interface
+   - KONTROL AKSES: Dapat membuat variabel read-only atau write-only
+   
+   Best Practice:
+   - Variabel: private
+   - Method akses: public
+   - Validasi: di dalam method setter
+
+5. Constructor Tanpa Return Type:
+   Constructor TIDAK memiliki return type karena:
+   
+   - TUJUAN KHUSUS: Constructor dirancang khusus untuk inisialisasi objek, bukan untuk mengembalikan nilai
+   - IMPLISIT RETURN: Constructor secara otomatis mengembalikan referensi objek yang baru dibuat
+   - IDENTIFIKASI: Tidak adanya return type (bahkan void) membedakan constructor dari method biasa
+   - ATURAN JAVA: Ini adalah aturan syntax Java untuk membedakan constructor dari method
+   
+   Jika constructor punya return type, compiler akan menganggapnya sebagai method biasa, bukan constructor.
+   
+   Contoh SALAH:
+   void BarangMusik() { } // Ini method, bukan constructor
+   
+   Contoh BENAR:
+   BarangMusik() { } // Ini constructor
+
